@@ -1,0 +1,36 @@
+# ---- Dépendances / build ----
+/vendor/
+node_modules/
+*.log
+
+# ---- Zips de livraison (régénérés à la fin) ----
+/delivery/*
+!/delivery/.gitkeep
+
+# ---- Config locale sensible ----
+config/database.local.php
+**/config/database.local.php
+.env
+*.env
+
+# ---- Base de données / dumps locaux ----
+*.sqlite
+*.db
+*.sql.bak
+
+# ---- Captures de travail temporaires ----
+# (garder docs/rapport/captures/ versionné ; ignorer seulement le brouillon)
+*.tmp
+*.swp
+*~
+
+# ---- OS / éditeurs ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sublime-*
+
+# ---- Résultats de scan temporaires (sqlmap, etc.) ----
+.sqlmap/
+sqlmap-output/
