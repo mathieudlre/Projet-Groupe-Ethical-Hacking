@@ -1,11 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>formulaire de contact</title>
+    <title>Nous contacter</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    
+
+    <!-- En-tête identique à l'index (harmonie) -->
+    <header>
+        <div class="logo">AppVuln</div>
+        <nav>
+            <a href="index.html" class="btn secondary">Accueil</a>
+            <a href="login.php" class="btn">Connexion</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Bandeau hero, même style que l'index -->
+        <section class="hero">
+            <h1>Nous contacter</h1>
+            <p>Une question, un problème ? Écrivez à notre équipe support, nous répondons rapidement.</p>
+        </section>
+
+        <!-- Formulaire -->
+        <section class="formwrap">
+            <div class="card">
+                <form method="post" action="contact.php">
+                    <label>Nom
+                        <input type="text" name="nom" required>
+                    </label>
+                    <label>Email
+                        <input type="email" name="email" required>
+                    </label>
+                    <label>Sujet
+                        <input type="text" name="sujet" required>
+                    </label>
+                    <label>Message
+                        <textarea name="message" rows="6" required></textarea>
+                    </label>
+                    <button type="submit">Envoyer</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Projet Ethical Hacking</p>
+    </footer>
+
 </body>
 </html>
