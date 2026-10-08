@@ -1,84 +1,74 @@
 <?php
-/* =====================================================================
- * Formulaire de contact PUBLIC
- * Brique : Membre 2
- * ---------------------------------------------------------------------
- * Accessible sans authentification. Enregistre un message en base.
- *
- * NOTE SÉCURITÉ (version vulnérable) :
- *   - L'INSERT utilise une requête préparée -> le formulaire n'est PAS
- *     injectable en SQL (la SQLi est une autre brique, côté admin).
- *   - Mais AUCUN échappement HTML n'est appliqué : le contenu (dont un
- *     éventuel <script>) est stocké tel quel. La faille XSS stockée se
- *     déclenchera plus tard, à l'affichage dans le back-office admin
- *     (voir admin/messages.php).
- * ===================================================================== */
+// app-vulnerable/public/contact.php
 
-require_once __DIR__ . '/../config/database.php';   // fournit $pdo (voir Membre 1)
+// 1. Inclusion du fichier de connexion à la BDD
+require_once __DIR__ . '/../config/db.php';
 
-$sent  = false;
-$error = null;
+$message_status = "";
 
+// 2. Vérification si le formulaire a été soumis en POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nom     = trim($_POST['nom']     ?? '');
-    $email   = trim($_POST['email']   ?? '');
-    $sujet   = trim($_POST['sujet']   ?? '');
-    $message = trim($_POST['message'] ?? '');
+    // Récupération brute des données du formulaire
+    $nom     = $_POST['nom']     ?? '';
+    $email   = $_POST['email']   ?? '';
+    $sujet   = $_POST['sujet']   ?? '';
+    $message = $_POST['message'] ?? '';
 
-    if ($nom === '' || $email === '' || $sujet === '' || $message === '') {
-        $error = 'Tous les champs sont obligatoires.';
+    if (!empty($nom) && !empty($email) && !empty($sujet) && !empty($message)) {
+        try {
+            // Insertion brute en base de données (nom, email, sujet, message, date_envoi)
+            $stmt = $pdo->prepare("INSERT INTO messages (nom, email, sujet, message, date_envoi) VALUES (:nom, :email, :sujet, :message, NOW())");
+            $stmt->execute([
+                ':nom'     => $nom,
+                ':email'   => $email,
+                ':sujet'   => $sujet,
+                ':message' => $message
+            ]);
+
+            $message_status = "<p style='color: green;'>Votre message a été envoyé avec succès !</p>";
+        } catch (PDOException $e) {
+            $message_status = "<p style='color: red;'>Erreur BDD : " . $e->getMessage() . "</p>";
+        }
     } else {
-        // Requête préparée : protège de la SQLi. Les valeurs partent
-        // telles quelles en base (pas de nettoyage anti-XSS = volontaire).
-        $stmt = $pdo->prepare(
-            'INSERT INTO messages (nom, email, sujet, message)
-             VALUES (:nom, :email, :sujet, :message)'
-        );
-        $stmt->execute([
-            ':nom'     => $nom,
-            ':email'   => $email,
-            ':sujet'   => $sujet,
-            ':message' => $message,
-        ]);
-        $sent = true;
+        $message_status = "<p style='color: red;'>Veuillez remplir tous les champs.</p>";
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nous contacter</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <title>Contact - Support</title>
 </head>
 <body>
-<main class="card">
     <h1>Nous contacter</h1>
 
-    <?php if ($sent): ?>
-        <p class="ok">Merci, votre message a bien été envoyé. Notre équipe vous répondra rapidement.</p>
-        <p><a href="contact.php">Envoyer un autre message</a></p>
-    <?php else: ?>
-        <?php if ($error): ?>
-            <p class="err"><?= htmlspecialchars($error) ?></p>
-        <?php endif; ?>
-        <form method="post" action="contact.php">
-            <label>Nom
-                <input type="text" name="nom" required>
-            </label>
-            <label>Email
-                <input type="email" name="email" required>
-            </label>
-            <label>Sujet
-                <input type="text" name="sujet" required>
-            </label>
-            <label>Message
-                <textarea name="message" rows="6" required></textarea>
-            </label>
-            <button type="submit">Envoyer</button>
-        </form>
-    <?php endif; ?>
-</main>
+    <!-- Affichage du message de confirmation ou d'erreur -->
+    <?php if (!empty($message_status)) echo $message_status; ?>
+
+    <!-- Le formulaire renvoie les données vers lui-même (contact.php) en POST -->
+    <form action="contact.php" method="POST">
+        <div>
+            <label for="nom">Nom :</label><br>
+            <input type="text" id="nom" name="nom" required>
+        </div>
+        <br>
+        <div>
+            <label for="email">Email :</label><br>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <br>
+        <div>
+            <label for="sujet">Sujet :</label><br>
+            <input type="text" id="sujet" name="sujet" required>
+        </div>
+        <br>
+        <div>
+            <label for="message">Message :</label><br>
+            <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+        <br>
+        <button type="submit">Envoyer</button>
+    </form>
 </body>
 </html>
