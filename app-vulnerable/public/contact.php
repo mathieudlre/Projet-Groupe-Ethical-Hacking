@@ -2,7 +2,7 @@
 // app-vulnerable/public/contact.php
 
 // 1. Inclusion du fichier de connexion à la BDD
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/database.php';
 
 $message_status = "";
 
@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Contact - Support</title>
+    <link rel="stylesheet" href="public/assets/css/style.css">
 </head>
 <body>
     <h1>Nous contacter</h1>
