@@ -1,10 +1,4 @@
 <?php
-<<<<<<< HEAD
-$host = "localhost";
-$dbname = "app_vulnerable";
-$username = "appuser";
-$password = "app123";
-=======
 /* =====================================================================
  * app-vulnerable/config/database.php  —  CONFIG UNIQUE (base "ehapp")
  * ---------------------------------------------------------------------
@@ -21,7 +15,6 @@ $DB_HOST = '127.0.0.1';
 $DB_NAME = 'ehapp';
 $DB_USER = 'root';
 $DB_PASS = '';
->>>>>>> caa65dd59013646168dfec579d410b101dd24e85
 
 function get_pdo_connection(): PDO
 {

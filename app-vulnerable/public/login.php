@@ -26,15 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user && hash_equals($user['mot_de_passe'], $motdepasse)) {
         session_regenerate_id(true);
         $_SESSION['user'] = $user;
-<<<<<<< HEAD
-        header("Location: index.php");
+        header('Location: ' . ($user['role'] === 'admin' ? '../admin/messages.php' : 'index.php'));
         exit;
-    } else {
-        $error = "Nom d'utilisateur ou mot de passe incorrect";
-=======
-        header('Location: ' . ($user['role'] === 'admin' ? '../admin/messages.php' : 'index.html'));
-        exit;
->>>>>>> caa65dd59013646168dfec579d410b101dd24e85
     }
     $erreur = 'Identifiant ou mot de passe incorrect.';
 }
@@ -46,19 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Connexion</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<<<<<<< HEAD
-<body class="login-page">
-
-<form method="POST" action="login.php">
-    <h1>Connexion</h1>
-
-    <?php if (isset($error)): ?>
-        <p style="color: red; text-align: center; margin-bottom: 15px;"><?php echo $error; ?></p>
-    <?php endif; ?>
-
-    <input type="text" name="username" placeholder="Nom d'utilisateur" required>
-    <input type="password" name="password" placeholder="Mot de passe" required>
-=======
 <body>
 <h1>Connexion</h1>
 
@@ -69,15 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <form method="POST">
     <input type="text" name="identifiant" placeholder="Identifiant" required><br><br>
     <input type="password" name="mot_de_passe" placeholder="Mot de passe" required><br><br>
->>>>>>> caa65dd59013646168dfec579d410b101dd24e85
     <button type="submit">Se connecter</button>
-
-<<<<<<< HEAD
-    <a href="register.php">Créer un compte</a>
 </form>
 
-=======
 <a href="register.php">Créer un compte</a>
->>>>>>> caa65dd59013646168dfec579d410b101dd24e85
 </body>
 </html>

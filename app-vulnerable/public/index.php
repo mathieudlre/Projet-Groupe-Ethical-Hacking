@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/auth.php';   // démarre la session proprement
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -14,7 +14,7 @@ session_start();
         <div class="logo">AppVuln</div>
         <nav>
             <?php if (isset($_SESSION['user'])): ?>
-                <span style="color: white; margin-right: 15px;">Bienvenue, <?php echo htmlspecialchars($_SESSION['user']['username']); ?></span>
+                <span style="color: white; margin-right: 15px;">Bienvenue, <?php echo htmlspecialchars($_SESSION['user']['identifiant']); ?></span>
                 <a href="logout.php" class="btn secondary">Déconnexion</a>
             <?php else: ?>
                 <a href="login.php" class="btn">Connexion</a>
