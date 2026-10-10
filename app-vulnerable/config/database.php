@@ -1,6 +1,4 @@
 <?php
-// app-vulnerable/config/database.php
-
 $host = "localhost";
 $dbname = "app_vulnerable";
 $username = "appuser";

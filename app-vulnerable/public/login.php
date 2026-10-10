@@ -12,31 +12,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user'] = $user;
-        header("Location: index.html");
+        header("Location: index.php");
         exit;
     } else {
-        echo "Email ou mot de passe incorrect";
+        $error = "Nom d'utilisateur ou mot de passe incorrect";
     }
 }
 ?>
-
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+    <meta charset="UTF-8">
     <title>Connexion</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body class="login-page">
 
-<h1>Connexion</h1>
+<form method="POST" action="login.php">
+    <h1>Connexion</h1>
 
-<form method="POST">
-    <input type="email" name="username" placeholder="username" required><br><br>
-    <input type="password" name="password" placeholder="Mot de passe" required><br><br>
+    <?php if (isset($error)): ?>
+        <p style="color: red; text-align: center; margin-bottom: 15px;"><?php echo $error; ?></p>
+    <?php endif; ?>
+
+    <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+    <input type="password" name="password" placeholder="Mot de passe" required>
     <button type="submit">Se connecter</button>
-</form>
 
-<a href="register.php">Créer un compte</a>
+    <a href="register.php">Créer un compte</a>
+</form>
 
 </body>
 </html>
