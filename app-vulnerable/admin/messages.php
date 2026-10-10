@@ -1,25 +1,9 @@
 <?php
-/* =====================================================================
- * Back-office : consultation des messages de contact
- * Brique : Membre 2   —   *** POINT VULNÉRABLE AU XSS STOCKÉ ***
- * ---------------------------------------------------------------------
- * Réservé à l'administrateur. Liste les messages reçus et affiche leur
- * contenu. C'est ICI que la faille se déclenche : le sujet et le message
- * sont réaffichés SANS échappement (pas de htmlspecialchars).
- *
- * Quand l'admin ouvre cette page, son navigateur exécute tout <script>
- * présent dans un message -> XSS stocké -> vol du cookie de session.
- *
- * Localisation exacte de la faille pour le rapport :
- *   - fichier : admin/messages.php
- *   - champs  : "sujet" et "message"
- *   - lignes  : voir les commentaires "<<< FAILLE XSS" plus bas
- * ===================================================================== */
 
 require_once __DIR__ . '/../config/database.php';   // $pdo
 require_once __DIR__ . '/../includes/auth.php';     // fourni par Membre 1
 
-require_admin();   // bloque l'accès si l'utilisateur n'est pas admin
+require_admin();   
 
 $stmt = $pdo->query(
     'SELECT id, nom, email, sujet, message, date_envoi

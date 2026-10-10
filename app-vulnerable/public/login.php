@@ -3,16 +3,16 @@ session_start();
 require "../config/database.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = $_POST['email'];
+    $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$email]);
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->execute([$username]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user'] = $user;
-        header("Location: ../index.php");
+        header("Location: index.html");
         exit;
     } else {
         echo "Email ou mot de passe incorrect";
@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <h1>Connexion</h1>
 
 <form method="POST">
-    <input type="email" name="email" placeholder="Email" required><br><br>
+    <input type="email" name="username" placeholder="username" required><br><br>
     <input type="password" name="password" placeholder="Mot de passe" required><br><br>
     <button type="submit">Se connecter</button>
 </form>
