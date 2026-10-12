@@ -1,0 +1,2 @@
+preuve que la XSS est possible
+<script>alert('XSS - Faille présente');</script>
