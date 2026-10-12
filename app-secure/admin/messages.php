@@ -1,12 +1,23 @@
 <?php
-// <<< REMÉDIATION 1 : Ajout de la politique CSP (Content Security Policy)
-// On bloque l'exécution de tout script inline (les balises <script> injectées ne s'exécuteront pas)
-header("Content-Security-Policy: default-src 'self'; script-src 'none';");
+/* =====================================================================
+ * app-secure/admin/messages.php  —  VERSION CORRIGÉE (remédiation XSS)
+ * ---------------------------------------------------------------------
+ * Correctifs par rapport à la version vulnérable :
+ *   1. Toutes les sorties sont échappées avec htmlspecialchars()
+ *      -> un <script> stocké s'affiche comme du texte, il ne s'exécute plus.
+ *   2. En-tête Content-Security-Policy (défense en profondeur) : même si un
+ *      script passait, le navigateur refuserait de l'exécuter.
+ * ===================================================================== */
 
-require_once DIR . '/../config/database.php';   // $pdo
-require_once DIR . '/../includes/auth.php';     // fourni par Membre 1
+require_once __DIR__ . '/../config/database.php';   // $pdo
+require_once __DIR__ . '/../includes/auth.php';     // require_admin()
 
 require_admin();
+
+// Remédiation XSS (défense en profondeur) : politique de sécurité du contenu.
+// 'self' uniquement -> pas de script inline, pas de script externe non autorisé.
+header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; base-uri 'self'");
+header("X-Content-Type-Options: nosniff");
 
 $stmt = $pdo->query(
     'SELECT id, nom, email, sujet, message, date_envoi
@@ -14,6 +25,11 @@ $stmt = $pdo->query(
      ORDER BY date_envoi DESC'
 );
 $messages = $stmt->fetchAll();
+
+/** Raccourci d'échappement HTML. */
+function e(?string $v): string {
+    return htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8');
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -33,16 +49,14 @@ $messages = $stmt->fetchAll();
         <?php foreach ($messages as $m): ?>
             <article class="msg">
                 <header>
-                    <strong><?= htmlspecialchars($m['nom']) ?></strong>
-                    &lt;<?= htmlspecialchars($m['email']) ?>&gt;
-                    <span class="date"><?= htmlspecialchars($m['date_envoi']) ?></span>
+                    <strong><?= e($m['nom']) ?></strong>
+                    &lt;<?= e($m['email']) ?>&gt;
+                    <span class="date"><?= e($m['date_envoi']) ?></span>
                 </header>
 
-                <!-- <<< REMÉDIATION 2 : Échappement des sorties avec htmlspecialchars -->
-                <h2 class="sujet"><?= htmlspecialchars($m['sujet'], ENT_QUOTES, 'UTF-8') ?></h2>
-
-                <!-- <<< REMÉDIATION 2 : Échappement des sorties avec htmlspecialchars -->
-                <div class="corps"><?= htmlspecialchars($m['message'], ENT_QUOTES, 'UTF-8') ?></div>
+                <!-- CORRIGÉ : sujet et message échappés -> plus d'exécution de script -->
+                <h2 class="sujet"><?= e($m['sujet']) ?></h2>
+                <div class="corps"><?= nl2br(e($m['message'])) ?></div>
             </article>
         <?php endforeach; ?>
     <?php endif; ?>
